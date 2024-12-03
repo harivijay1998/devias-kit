@@ -1,138 +1,78 @@
 import React, { useState } from "react";
 import {
   Box,
-  Typography,
-  Button,
-  Menu,
-  MenuItem,
-  Divider,
   List,
   ListItem,
   ListItemText,
-  ListItemIcon
+  ListItemIcon,
+  Divider,
+  Typography
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import SettingsIcon from "@mui/icons-material/Settings";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ErrorIcon from "@mui/icons-material/Error";
 
+import DashBoard from "./DashBoard";
+import Customers from "./Customers";
+import Integrations from "./Integrations";
+import Settings from "./Settings";
+import Account from "./Account";
 
-const Overview = () => <span>Overview</span>;
-const Customers = () => <span>Customers</span>;
-const Integrations = () => <span>Integrations</span>;
-const Settings = () => <span>Settings</span>;
-const Account = () => <span>Account</span>;
-const Error = () => <span>Error</span>;
+const SideBar = ({ setActiveView }) => {
+  const [activeItem, setActiveItem] = useState("Dashboard");
 
-const SideBar = () => {
-    const menuItems = [
-        { key: "Overview", component: <Overview />, icon: <DashboardIcon /> },
-        { key: "Customers", component: <Customers />, icon: <PeopleIcon /> },
-        { key: "Integrations", component: <Integrations />, icon: <IntegrationInstructionsIcon /> },
-        { key: "Settings", component: <Settings />, icon: <SettingsIcon /> },
-        { key: "Account", component: <Account />, icon: <AccountCircleIcon /> },
-        { key: "Error", component: <Error />, icon: <ErrorIcon /> },
-      ];
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [activeItem, setActiveItem] = useState("Overview");
+  // Menu items with corresponding components
+  const menuItems = [
+    { key: "Dashboard", icon: <DashboardIcon />, component: <DashBoard /> },
+    { key: "Customers", icon: <PeopleIcon />, component: <Customers /> },
+    {
+      key: "Integrations",
+      icon: <IntegrationInstructionsIcon />,
+      component: <Integrations />,
+    },
+    { key: "Settings", icon: <SettingsIcon />, component: <Settings /> },
+    { key: "Account", icon: <PeopleIcon />, component: <Account /> },
 
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  ];
 
   return (
+    <>
+   
     <Box
       sx={{
         width: "250px",
-        height: "100vh",
         backgroundColor: "#121621",
         color: "white",
+        height: "100vh",
         padding: 2,
+        position: "fixed",
       }}
     >
-      <Box
-        component="img"
-        alt="homelogo"
-        src="images/logo-home.svg"
-        sx={{ width: "100px", color: "white" ,paddingBlock:'30px', paddingInlineStart:'40px', objectFit:'contain'}}
-      ></Box>
-
-      <Box
-        sx={{
-          backgroundColor: "#1a1a2e",
-          color: "#fff",
-          border: "1px solid rgba(255, 255, 255, 0.3)",
-          borderRadius: "8px",
-          padding: "12px 16px",
-          width: "200px",
-          marginBottom: 2, 
-        }}
-      >
-        <Typography
-          variant="body2"
-          sx={{
-            color: "rgba(255, 255, 255, 0.6)",
-            fontWeight: 400,
-            marginBottom: "4px",
-          }}
-        >
-          Workspace
-        </Typography>
-        <Button
-          endIcon={<ExpandMoreIcon />}
-          onClick={handleClick}
-          sx={{
-            color: "#fff",
-            fontSize: "16px",
-            fontWeight: 500,
-            textTransform: "none",
-            padding: 0,
-            justifyContent: "space-between",
-            width: "100%",
-          }}
-        >
-          Devias
-        </Button>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          PaperProps={{
-            sx: {
-              backgroundColor: "#1a1a2e",
-              color: "#fff",
-            },
-          }}
-        >
-          <MenuItem onClick={handleClose}>Option 1</MenuItem>
-          <MenuItem onClick={handleClose}>Option 2</MenuItem>
-        </Menu>
+      <Box sx={{ marginBottom: 2 }}>
+      <Typography variant="h5" align="center" gutterBottom>
+        DeviasKit
+      </Typography>
+      <Divider sx={{ backgroundColor: 'gray' }} />
       </Box>
-
       
-      <Divider sx={{ backgroundColor: "gray" }} />
-
       <List>
         {menuItems.map((item, index) => (
           <ListItem
             button
             key={index}
-            onClick={() => setActiveItem(item.key)} 
+            onClick={() => {
+              setActiveItem(item.key);
+              setActiveView(item.component); // Update active view
+            }}
             sx={{
               backgroundColor: activeItem === item.key ? "#6C63FF" : "transparent",
               color: activeItem === item.key ? "white" : "rgba(255, 255, 255, 0.7)",
               "&:hover": {
-                backgroundColor: activeItem === item.key
-                  ? "#574dff"
-                  : "rgba(255, 255, 255, 0.1)",
+                backgroundColor:
+                  activeItem === item.key
+                    ? "#574dff"
+                    : "rgba(255, 255, 255, 0.1)",
               },
               borderRadius: "8px",
               marginBottom: 1,
@@ -140,18 +80,18 @@ const SideBar = () => {
           >
             <ListItemIcon
               sx={{
-                color: activeItem === item.key ? "white" : "rgba(255, 255, 255, 0.7)",
+                color:
+                  activeItem === item.key ? "white" : "rgba(255, 255, 255, 0.7)",
               }}
             >
               {item.icon}
             </ListItemIcon>
-            <ListItemText primary={item.component} />
+            <ListItemText primary={item.key} />
           </ListItem>
         ))}
       </List>
-      <Divider sx={{ backgroundColor: "gray" }} />
-
     </Box>
+    </>
   );
 };
 
