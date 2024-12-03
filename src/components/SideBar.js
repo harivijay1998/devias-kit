@@ -22,7 +22,6 @@ import Account from "./Account";
 const SideBar = ({ setActiveView }) => {
   const [activeItem, setActiveItem] = useState("Dashboard");
 
-  // Menu items with corresponding components
   const menuItems = [
     { key: "Dashboard", icon: <DashboardIcon />, component: <DashBoard /> },
     { key: "Customers", icon: <PeopleIcon />, component: <Customers /> },
@@ -63,7 +62,7 @@ const SideBar = ({ setActiveView }) => {
             key={index}
             onClick={() => {
               setActiveItem(item.key);
-              setActiveView(item.component); // Update active view
+              setActiveView(item.component); 
             }}
             sx={{
               backgroundColor: activeItem === item.key ? "#6C63FF" : "transparent",
