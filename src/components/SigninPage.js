@@ -6,9 +6,7 @@ import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
 const SignInSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Invalid email format")
-    .required("Email is required"),
+  email: Yup.string().email("Invalid email format").required("Email is required"),
   password: Yup.string()
     .required("Password is required")
     .matches(
@@ -41,8 +39,8 @@ const ForgotPasswordSchema = Yup.object().shape({
 });
 
 const SigninPage = () => {
-  const [formType, setFormType] = useState("signin"); 
-  const navigate = useNavigate()
+  const [formType, setFormType] = useState("signin");
+  const navigate = useNavigate();
 
   const toggleForm = (type) => {
     setFormType(type);
@@ -77,171 +75,172 @@ const SigninPage = () => {
   };
 
   return (
-    <>
-      <Grid container>
-        <Grid item xs={6}>
-          <img className="logo" alt="logo" src="images/logo--dark.svg"></img>
+    <Grid container>
+      <Grid item xs={6}>
+        <Box sx={{ paddingInline: "150px", paddingBlock: "150px" }}>
+          <Typography variant="h3" color="black">
+            {formType === "signup"
+              ? "Sign Up"
+              : formType === "forgotPassword"
+              ? "Forgot Password"
+              : "Sign In"}
+          </Typography>
 
-          <Box sx={{ paddingInline: "150px", paddingBlock: "150px" }}>
-            <Typography variant="h3" color="black">
-              {formType === "signup"
-                ? "Sign Up"
+          <Formik
+            initialValues={
+              formType === "signup"
+                ? { email: "", password: "", confirmPassword: "" }
                 : formType === "forgotPassword"
-                ? "Forgot Password"
-                : "Sign In"}
-            </Typography>
-            <Typography variant="p" color="black">
-              {formType === "signup" ? (
-                <>
-                  Already have an account?{" "}
-                  <Link href="#" onClick={() => toggleForm("signin")}>
-                    Sign In
-                  </Link>
-                </>
-              ) : formType === "forgotPassword" ? (
-                <>
-                  Remember your password?{" "}
-                  <Link href="#" onClick={() => toggleForm("signin")}>
-                    Sign In
-                  </Link>
-                </>
-              ) : (
-                <>
-                  Don't have an account?{" "}
-                  <Link href="#" onClick={() => toggleForm("signup")}>
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </Typography>
-
-            <Formik
-              initialValues={
-                formType === "signup"
-                  ? { email: "", password: "", confirmPassword: "" }
-                  : formType === "forgotPassword"
-                  ? { email: "", newPassword: "" }
-                  : { email: "", password: "" }
+                ? { email: "", newPassword: "" }
+                : { email: "", password: "" }
+            }
+            validationSchema={
+              formType === "signup"
+                ? SignUpSchema
+                : formType === "forgotPassword"
+                ? ForgotPasswordSchema
+                : SignInSchema
+            }
+            onSubmit={(values) => {
+              if (formType === "signup") {
+                const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
+                storedUsers.push({ email: values.email, password: values.password });
+                localStorage.setItem("users", JSON.stringify(storedUsers));
+                alert("Sign-up successful!");
+                toggleForm("signin");
+              } else if (formType === "forgotPassword") {
+                handleForgotPassword(values);
+              } else {
+                handleSignIn(values);
               }
-              validationSchema={
-                formType === "signup"
-                  ? SignUpSchema
-                  : formType === "forgotPassword"
-                  ? ForgotPasswordSchema
-                  : SignInSchema
-              }
-              onSubmit={(values) => {
-                if (formType === "signup") {
-                  const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-                  storedUsers.push({ email: values.email, password: values.password });
-                  localStorage.setItem("users", JSON.stringify(storedUsers));
-                  alert("Sign-up successful!");
-                  toggleForm("signin");
-                } else if (formType === "forgotPassword") {
-                  handleForgotPassword(values);
-                } else {
-                  handleSignIn(values);
-                }
-              }}
-            >
-              {({ errors, touched, handleChange, handleBlur, handleSubmit }) => (
-                <Form onSubmit={handleSubmit}>
+            }}
+          >
+            {({ errors, touched, handleChange, handleBlur, handleSubmit }) => (
+              <Form onSubmit={handleSubmit}>
+                <TextField
+                  fullWidth
+                  id="email"
+                  name="email"
+                  label="Email"
+                  variant="outlined"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.email && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
+                  margin="normal"
+                />
+                {(formType === "signup" || formType === "signin") && (
                   <TextField
                     fullWidth
-                    id="email"
-                    name="email"
-                    label="Email"
+                    id="password"
+                    name="password"
+                    label="Password"
+                    type="password"
                     variant="outlined"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    error={touched.email && Boolean(errors.email)}
-                    helperText={touched.email && errors.email}
+                    error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
                     margin="normal"
                   />
-                  {formType !== "forgotPassword" && (
-                    <TextField
-                      fullWidth
-                      id="password"
-                      name="password"
-                      label="Password"
-                      type="password"
-                      variant="outlined"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.password && Boolean(errors.password)}
-                      helperText={touched.password && errors.password}
-                      margin="normal"
-                    />
-                  )}
-                  {formType === "forgotPassword" && (
-                    <TextField
-                      fullWidth
-                      id="newPassword"
-                      name="newPassword"
-                      label="New Password"
-                      type="password"
-                      variant="outlined"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.newPassword && Boolean(errors.newPassword)}
-                      helperText={touched.newPassword && errors.newPassword}
-                      margin="normal"
-                    />
-                  )}
-
-                  {formType === "signin" && (
-                    <Typography sx={{ marginTop: "10px" }}>
-                      Forgot your password?{" "}
-                      <Link href="#" onClick={() => toggleForm("forgotPassword")}>
-                        Reset Password
-                      </Link>
-                    </Typography>
-                  )}
-
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
+                )}
+                {formType === "signup" && (
+                  <TextField
                     fullWidth
-                    sx={{ mt: 2 }}
-                  >
-                    {formType === "signup"
-                      ? "Sign Up"
-                      : formType === "forgotPassword"
-                      ? "Reset Password"
-                      : "Sign In"}
-                  </Button>
-                </Form>
-              )}
-            </Formik>
-          </Box>
-        </Grid>
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    variant="outlined"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                    helperText={touched.confirmPassword && errors.confirmPassword}
+                    margin="normal"
+                  />
+                )}
+                {formType === "forgotPassword" && (
+                  <TextField
+                    fullWidth
+                    id="newPassword"
+                    name="newPassword"
+                    label="New Password"
+                    type="password"
+                    variant="outlined"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.newPassword && Boolean(errors.newPassword)}
+                    helperText={touched.newPassword && errors.newPassword}
+                    margin="normal"
+                  />
+                )}
+                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                  {formType === "signup"
+                    ? "Sign Up"
+                    : formType === "forgotPassword"
+                    ? "Reset Password"
+                    : "Sign In"}
+                </Button>
+              </Form>
+            )}
+          </Formik>
 
-       
-        <Grid
-          item
-          xs={6}
-          sx={{
-            backgroundColor: "#090e23",
-            paddingInline: "100px",
-            paddingBlock: "50px",
-          }}
-        >
-          <Typography variant="h5" color="white" sx={{ textAlign: "center" }}>
-            Welcome to <Typography variant="span" color="green">Devias Kit</Typography>
+          <Typography sx={{ mt: 2 }}>
+            {formType === "signin" && (
+              <>
+                Don't have an account?{" "}
+                <Link href="#" onClick={() => toggleForm("signup")}>
+                  Sign Up
+                </Link>{" "}
+                |{" "}
+                <Link href="#" onClick={() => toggleForm("forgotPassword")}>
+                  Forgot Password?
+                </Link>
+              </>
+            )}
+            {formType === "signup" && (
+              <>
+                Already have an account?{" "}
+                <Link href="#" onClick={() => toggleForm("signin")}>
+                  Sign In
+                </Link>
+              </>
+            )}
+            {formType === "forgotPassword" && (
+              <>
+                Remember your password?{" "}
+                <Link href="#" onClick={() => toggleForm("signin")}>
+                  Sign In
+                </Link>
+              </>
+            )}
           </Typography>
-          <Typography variant="p" color="white" sx={{ textAlign: "center" }}>
-            A professional template with ready-to-use MUI components.
-          </Typography>
-          <Box
-            component="img"
-            alt="kitimg"
-            src="images/auth-widgets.png"
-            sx={{ width: "600px", height: "515px", objectFit: "contain" }}
-          />
-        </Grid>
+        </Box>
       </Grid>
-    </>
+
+      <Grid
+        item
+        xs={6}
+        sx={{
+          backgroundColor: "#090e23",
+          paddingInline: "100px",
+          paddingBlock: "50px",
+        }}
+      >
+        <Typography variant="h5" color="white" sx={{ textAlign: "center" }}>
+          Welcome to <Typography variant="span" color="green">Devias Kit</Typography>
+        </Typography>
+        <Typography variant="p" color="white" sx={{ textAlign: "center" }}>
+          A professional template with ready-to-use MUI components.
+        </Typography>
+        <Box
+          component="img"
+          alt="kitimg"
+          src="images/auth-widgets.png"
+          sx={{ width: "600px", height: "515px", objectFit: "contain" }}
+        />
+      </Grid>
+    </Grid>
   );
 };
 
