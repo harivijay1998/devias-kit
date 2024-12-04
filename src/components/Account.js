@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { Divider } from '@mui/material';
+import AppHeader from './AppHeader';
 
 const Account= () => {
   const [profileData, setProfileData] = useState({
@@ -31,7 +32,11 @@ const Account= () => {
   };
 
   return (
-    <Grid container spacing={2} sx={{paddingInline:'50px',paddingBlock:'150px',gap:'20px'}}>
+    <>
+    <AppHeader/>
+    <Divider sx={{ backgroundColor: "gray", marginBottom: 2 }} />
+    <Typography variant='h3' color='black'>Account</Typography>
+    <Grid container spacing={2} sx={{paddingInline:'50px',paddingBlock:'50px',gap:'20px'}}>
       <Grid item xs={12} md={5} sx={{border:'1px solid gray',paddingBlock:'0px',height:'350px',borderRadius:'20px'}}>
         <Box sx={{ display: 'flex', flexDirection:'column',alignItems: 'center', marginBottom: 2 ,paddingBlock:'50px' ,paddingInline:'50px' }}>
           <Avatar alt="Sofia Rivers" src="images/avatar.png" sx={{ width: 80, height: 80, marginRight: 2 }} />
@@ -41,10 +46,11 @@ const Account= () => {
             <Typography variant="body2">GMT-7</Typography>
           </div>
         </Box>
-        <Button variant="contained" component="label" sx={{left:'140px',top:'-30px'}}>
+        <Button variant="contained" component="label" sx={{left:'140px',top:'-30px' ,backgroundColor:'transparent', color:"#1565c0", boxShadow:'none'}}>
           Upload picture
           <input type="file" hidden />
         </Button>
+        
       </Grid>
 
       <Grid item xs={12} md={6} sx={{border:'1px solid gray', paddingInline:'20px', paddingBlock:'30px',borderRadius:'20px'}}>
@@ -118,6 +124,7 @@ const Account= () => {
         </form>
       </Grid>
     </Grid>
+    </>
   );
 };
 

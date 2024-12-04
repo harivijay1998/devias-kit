@@ -19,6 +19,8 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  LinearProgress,
+  Divider
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PeopleIcon from '@mui/icons-material/People';
@@ -31,6 +33,9 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import Chart from 'react-apexcharts';
 import AppHeader from './AppHeader';
+import DesktopMacIcon from "@mui/icons-material/DesktopMac";
+import TabletMacIcon from "@mui/icons-material/TabletMac";
+import SmartphoneIcon from "@mui/icons-material/Smartphone";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,7 +55,7 @@ const Dashboard = () => {
       color: '#556ee6',
       icon: <AttachMoneyIcon />,
       percentage: '12%',
-      trend: <ArrowUpwardIcon/>,
+      trend: <ArrowUpwardIcon />,
       description: 'Since last month',
     },
     {
@@ -59,7 +64,7 @@ const Dashboard = () => {
       color: '#34c38f',
       icon: <GroupIcon />,
       percentage: '16%',
-      trend: <ArrowDownwardIcon/>,
+      trend: <ArrowDownwardIcon />,
       description: 'Since last month',
     },
     {
@@ -67,6 +72,7 @@ const Dashboard = () => {
       value: '75.5%',
       color: '#f1b44c',
       icon: <TrendingUpIcon />,
+      progressValue: 75.5, // Added progress value
     },
     {
       label: 'Total Profit',
@@ -86,13 +92,29 @@ const Dashboard = () => {
   };
 
   const trafficChartData = {
-    series: [44, 55, 41],
+    series: [63, 15, 22],
     options: {
-      chart: { type: 'donut' },
-      labels: ['Direct', 'Referral', 'Social'],
-      colors: ['#556ee6', '#34c38f', '#f1b44c'],
+      chart: {
+        type: 'donut',
+        width: '100%' 
+      },
+      labels: ['Desktop', 'Tablet', 'Phone'],
+      colors: ['#f1b44c', '#34c38f', '#556ee6'],
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: '100%'
+          }
+        }
+      }]
     },
   };
+   const trafficData = [
+    { label: 'Desktop', value: 63, icon: <DesktopMacIcon /> },
+    { label: 'Tablet', value: 15, icon: <TabletMacIcon /> },
+    { label: 'Mobile', value: 22, icon: <SmartphoneIcon /> },
+  ];
 
   const products = [
     { name: 'Soja & Co. Eucalyptus', date: 'Updated Mar 8, 2024', img: 'https://via.placeholder.com/50' },
@@ -116,46 +138,76 @@ const Dashboard = () => {
   return (
     <>
       <AppHeader onSearchToggle={handleSearch}/>
+      <Divider sx={{ backgroundColor: "gray", marginBottom: 2 }} />
       
 
       <Box sx={{ p: 4, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
         <Grid container spacing={4}>
           
-          {statCards.map((item, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card sx={{ textAlign: 'left', p: 2, border:'1px solid gray', borderRadius:'20px' }}>
-                <CardContent sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
-                      {item.label.toUpperCase()}
+        {statCards.map((item, index) => (
+        <Grid item xs={12} sm={6} md={3} key={index}>
+          <Card
+            sx={{
+              textAlign: 'left',
+              p: 2,
+              border: '1px solid gray',
+              borderRadius: '20px',
+              height: '180px',
+              width: '230px',
+            }}
+          >
+            <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                  {item.label.toUpperCase()}
+                </Typography>
+                <Typography variant="h4" sx={{ fontWeight: '400' }}>
+                  {item.value}
+                </Typography>
+                {item.label === 'Task Progress' ? (
+                  <>
+                    <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+                      Progress: {item.progressValue}%
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: '400' }}>
-                      {item.value}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'text.secondary', ml: 1 }}>
-                      {item.trend}{item.percentage}{item.description}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      width: 50,
-                      height: 50,
-                      backgroundColor: item.color,
-                      color: 'white',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {item.icon}
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
+                    <LinearProgress
+                      variant="determinate"
+                      value={item.progressValue}
+                      sx={{
+                        height: 8,
+                        mt: 1,
+                        backgroundColor: '#e0e0e0',
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: item.color,
+                        },
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Typography variant="body2" sx={{ color: 'text.secondary', ml: 1 }}>
+                    {item.trend}
+                    {item.percentage} {item.description}
+                  </Typography>
+                )}
+              </Box>
+              <Box
+                sx={{
+                  width: 50,
+                  height: 50,
+                  backgroundColor: item.color,
+                  color: 'white',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {item.icon}
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
           ))}
 
-          {/* Sales Chart */}
           <Grid item xs={12} md={8}>
             <Card sx={{border:'1px solid gray', borderRadius:'20px'}}>
               <CardContent>
@@ -165,17 +217,26 @@ const Dashboard = () => {
             </Card>
           </Grid>
 
-          {/* Traffic Source Chart */}
           <Grid item xs={12} md={4}>
-          <Card sx={{border:'1px solid gray', borderRadius:'20px'}}>
+            <Card sx={{ border: "1px solid gray", borderRadius: "20px" }}>
               <CardContent>
                 <Typography variant="h6">Traffic Source</Typography>
-                <Chart options={trafficChartData.options} series={trafficChartData.series} type="donut" height={350} />
+                <Chart options={trafficChartData.options} series={trafficChartData.series} type="donut" height={300} />
+                <div style={{ display: "flex", justifyContent: "space-around", marginTop: "20px" }}>
+                  {trafficData.map((item, index) => (
+                    <div key={index} style={{ textAlign: "center" }}>
+                      {item.icon}
+                      <Typography variant="body2">{item.label}</Typography>
+                      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                        {item.value}%
+                      </Typography>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </Grid>
 
-          {/* Latest Products */}
           <Grid item xs={12} md={6}>
           <Card sx={{border:'1px solid gray', borderRadius:'20px'}}>
               <CardContent>
@@ -194,7 +255,6 @@ const Dashboard = () => {
             </Card>
           </Grid>
 
-          {/* Latest Orders */}
           <Grid item xs={12} md={6}>
           <Card sx={{border:'1px solid gray', borderRadius:'20px'}}>
               <CardContent>

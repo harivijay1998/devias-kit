@@ -5,6 +5,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import AppHeader from './AppHeader';
+import { Divider } from '@mui/material';
 
 const Settings= () => {
   const [emailNotifications, setEmailNotifications] = useState({
@@ -61,15 +63,20 @@ const Settings= () => {
   };
 
   return (
+    <>
+    <AppHeader/>
+    <Divider sx={{ backgroundColor: "gray", marginBottom: 2 }} />
+    <Typography variant="h3">Settings</Typography>
     <Box sx={{ padding: 2 }}>
-      <Typography variant="h4">Settings</Typography>
-
-      <Box sx={{ mt: 2 }}>
+      <Box sx={{ mt: 2, border:'1px solid #aaa', paddingBlock:'30px', borderRadius:'20px' }}>
+        <Box sx={{borderBottom:'1px solid #aaa', paddingInlineStart:'20px', paddingBlockEnd:'20px'}}>
         <Typography variant="h6">Notifications</Typography>
         <Typography variant="body2">Manage the notifications</Typography>
-
-        <Box sx={{ mt: 2 }}>
+        </Box>
+        <Box sx={{display:'flex',alignItems:'center', gap:'40px'}}>
+        <Box sx={{ mt: 2  , paddingInlineStart:'20px'}}>
           <Typography variant="h6">Email</Typography>
+          <Box sx={{display:'flex',flexDirection:'column'}}>
           <FormControlLabel
             control={<Checkbox checked={emailNotifications.productUpdates} onChange={handleEmailChange} name="productUpdates" />}
             label="Product updates"
@@ -78,10 +85,12 @@ const Settings= () => {
             control={<Checkbox checked={emailNotifications.securityUpdates} onChange={handleEmailChange} name="securityUpdates" />}
             label="Security updates"
           />
+          </Box>
         </Box>
 
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, paddingInlineStart:'20px' }}>
           <Typography variant="h6">Phone</Typography>
+          <Box sx={{display:'flex',flexDirection:'column'}}>
           <FormControlLabel
             control={<Checkbox checked={phoneNotifications.email} onChange={handlePhoneChange} name="email" />}
             label="Email"
@@ -90,18 +99,23 @@ const Settings= () => {
             control={<Checkbox checked={phoneNotifications.securityUpdates} onChange={handlePhoneChange} name="securityUpdates" />}
             label="Security updates"
           />
+          </Box>
+        </Box>
         </Box>
       </Box>
 
-      <Box sx={{ mt: 4 }}>
+      <Box sx={{ mt: 4  , border:'1px solid #aaa' , borderRadius:'20px', paddingBlockEnd:'30px'}}>
+        <Box sx={{borderBottom:'1px solid #aaa', paddingBlock:'20px', paddingInlineStart:'30px'}}>
         <Typography variant="h6">Password</Typography>
+        </Box>
+        <Box sx={{paddingInlineStart:'20px'}}>
         <TextField
           label="Current Password"
           type="password"
           value={currentPassword}
           onChange={handlePasswordChange}
           name="currentPassword"
-          sx={{ mt: 2, width: '100%' }}
+          sx={{ mt: 2, width: '70%' }}
           required
         />
         <TextField
@@ -110,7 +124,7 @@ const Settings= () => {
           value={newPassword}
           onChange={handlePasswordChange}
           name="newPassword"
-          sx={{ mt: 2, width: '100%' }}
+          sx={{ mt: 2, width: '70%' }}
           required
         />
         <TextField
@@ -119,15 +133,17 @@ const Settings= () => {
           value={confirmPassword}
           onChange={handlePasswordChange}
           name="confirmPassword"
-          sx={{ mt: 2, width: '100%' }}
+          sx={{ mt: 2, width: '70%' }}
           required
         />
+        </Box>
       </Box>
 
       <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={handleSaveChanges}>
         Save Changes
       </Button>
     </Box>
+    </>
   );
 };
 

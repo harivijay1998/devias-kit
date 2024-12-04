@@ -11,11 +11,15 @@ import {
   Checkbox,
   Button,
   TextField,
+  Divider,
+  Typography,
   Box,
+  InputAdornment,
+ 
 } from "@mui/material";
 import AppHeader from "./AppHeader";
+import SearchIcon from '@mui/icons-material/Search'
 
-// Sample customer data
 const customers = [
   {
     id: 1,
@@ -88,6 +92,8 @@ const Customers = () => {
   return (
     <>
     <AppHeader/>
+    <Divider sx={{ backgroundColor: "gray", marginBottom: 2 }} />
+      <Typography variant='h3' color='black'>Customers</Typography>
     <Box sx={{ padding: 2 }}>
       <TextField
         label="Search Customers"
@@ -95,6 +101,11 @@ const Customers = () => {
         value={search}
         onChange={handleSearchChange}
         sx={{ marginBottom: 2 }}
+        InputProps={{
+          startAdornment:(
+            <InputAdornment position="start"><SearchIcon/></InputAdornment>
+          )
+        }}
       />
       <TableContainer component={Paper}>
         <Table>
